@@ -2,16 +2,22 @@
 
 Lightweight mock server created from an OpenAPI specification. 
 
-Why **native**? Because the request-response interactions are defined within the OpenAPI specification, without
+Why **native**? Because the request-response interactions are defined within the OpenAPI file, without
 the need for an additional application or storage (and therefore complexity).
 
-The request-response interactions (aka the contracts) are defined parsing the OpenAPI examples, see [mapping strategies](#how-it-works).
+The request-response interactions (aka the contracts) are defined by parsing the OpenAPI examples, see [mapping strategies](#how-it-works).
 A fallback response is generated to ensure every request receives always a response.
 
 It is:
 * **lightweight**: it runs in a single (small) container
 * **fast**: it creates behind the scenes a Go service with minimal footprint
 * **simple**: it displays the mock expectations in the index page. View the JSON payload each request will receive.
+
+## Use cases
+
+It can be used for different scenarios:
+* integration testing with [TestContainers](https://github.com/gcatanese/openapi-testcontainers) of an API SDK under development
+* mock a third-party API dependency
 
 ## Usage
 

@@ -1,17 +1,17 @@
 # OpenAPI Native Mock Server
 
-The OpenAPI native mock server is a lightweight mock server created from an OpenAPI specification. 
+Lightweight mock server created from an OpenAPI specification. 
 
 Why **native**? Because the request-response interactions are defined within the OpenAPI specification, without
 the need for an additional application or storage (and therefore complexity).
 
 The request-response interactions (aka the contracts) are defined parsing the OpenAPI examples, see [mapping strategies](#how-it-works).
-A fallback response is always generated to ensure every request has always a response.
+A fallback response is generated to ensure every request receives always a response.
 
 It is:
 * **lightweight**: it runs in a single (small) container
 * **fast**: it creates behind the scenes a Go service with minimal footprint
-* **simple**: it displays the mock expectations in the index page
+* **simple**: it displays the mock expectations in the index page. View the JSON payload each request will receive.
 
 ## Usage
 
@@ -19,26 +19,24 @@ It is:
 
 Build the mock server from your OpenAPI file:
 ```docker
-docker build --build-arg openapifile=/path/to/myOpenapiFile.yaml -t openapi-native-mock-server .
+docker build --build-arg openapifile=/path/openapiFile.yaml -t openapi-native-mock-server .
 ```
 
 Run the container:
 ```docker
-docker run --rm -d -p 8080:8080 --name openapi-native-mock-server oopenapi-native-mock-server
+docker run --rm -d -p 8080:8080 --name openapi-native-mock-server openapi-native-mock-server
 ```
 
-Point your API requests to the mock server
+Point your API requests to the mock server:
 ```shell
 curl -X POST -H "Content-Type: application/json" \
  -d '{"name":"abc","country":"abc"}' \
-   http://localhost:8080/{path}{endpoint}
+   http://localhost:8080/{your_api_endpoint}
 ```
 
 ### Build and run from source
 
-**Note**: requires Java 11
-
-Build the mock server:
+Build the mock server (**Note**: requires Java 11)
 ```shell
 mvn package
 ```
@@ -47,18 +45,23 @@ Generate the mock server passing the path of the OpenAPI file (i.e. `-i openapi/
 folder that will contain the mock server source code (i.e. `-o openapi/tmp/go-server`):
 ```shell
 java -cp target/openapi-native-mock-server.jar:openapi/cli/openapi-generator-cli.jar \
-    org.openapitools.codegen.OpenAPIGenerator generate -g com.tweesky.cloudtools.codegen.NativeMockServerCodegen \
-      -i openapi/tmp/openapi.yaml -o openapi/tmp/go-server
+ org.openapitools.codegen.OpenAPIGenerator generate -g com.tweesky.cloudtools.codegen.NativeMockServerCodegen \
+  -i openapi/tmp/openapi.yaml -o openapi/tmp/go-server
 ```
 
-Run the mock server:
-
-**Note**: requires Go 1.19
+Run the mock server (**Note**: requires Go 1.19):
 
 ```shell
 cd openapi/tmp/go-server
 go mod tidy
 go run .
+```
+
+Point your API requests to the mock server:
+```shell
+curl -X POST -H "Content-Type: application/json" \
+ -d '{"name":"abc","country":"abc"}' \
+   http://localhost:8080/{your_api_endpoint}
 ```
 
 ### Mock server browser

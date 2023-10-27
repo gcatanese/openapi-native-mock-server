@@ -17,6 +17,8 @@ jobs:
         cache: maven
     - name: Build jar
       run: mvn -B package --file pom.xml
+    - name: Build base image
+      run: docker build -f BaseDockerfile -t gcatanese/openapi-native-mock-server .
     - name: Build mock server
       run: docker build --build-arg openapifile=openapi/sample.yaml -t openapi-native-mock-server .
     - name: Run mock server

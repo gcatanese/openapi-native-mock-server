@@ -2,6 +2,6 @@
 openapi-native-mock-server.iml
 openapi/tmp
 target
-LocalNativeMockSeverCodegenTest.java
+LocalNativeMockServerCodegenTest.java
 .DS_Store
 output

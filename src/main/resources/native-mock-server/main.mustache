@@ -1,0 +1,24 @@
+{{>partial_header}}
+package main
+
+import (
+	"log"
+	"embed"
+	"html/template"
+
+	sw "github.com/openapi-native-mock-server/{{apiPath}}"
+)
+
+//go:embed templates/*
+var f embed.FS
+
+func main() {
+	log.Printf("Server started")
+
+	router := sw.NewRouter()
+
+	templ := template.Must(template.New("").ParseFS(f, "templates/*.html"))
+	router.SetHTMLTemplate(templ)
+
+	log.Fatal(router.Run(":{{serverPort}}"))
+}

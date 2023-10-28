@@ -15,9 +15,10 @@ It is:
 
 ## Use cases
 
-It can be used for different scenarios:
-* integration testing with [TestContainers](https://github.com/gcatanese/openapi-testcontainers) of an API SDK under development
-* mock a third-party API dependency
+It can be used in different scenarios:
+* you are developing an API SDK and need to implement solid integration testing: try it out in combination with [TestContainers](https://github.com/gcatanese/openapi-testcontainers).
+* you are building APIs and want to help your API consumers during the integration: make available a mock server that implements the API contract.
+* you are developing an application that uses a third-party API dependency: mock the API to make your development faster and efficient.
 
 ## Usage
 

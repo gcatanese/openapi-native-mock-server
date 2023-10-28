@@ -91,7 +91,7 @@ mock server based on the OpenAPI specification. The request and response example
 interactions (contract) between the consumer and the producer of the API.  
 
 The following strategies are applied (in order) to match requests with responses:
-* **match by Contract tag**: do requests and examples use the vendor extension `x-contract-id`? In this case match a request with a response example that has the same value
+* **match by Contract tag**: do the examples use the vendor extension `x-contract-id`? In this case, match a request with a response example that has the same value
 * **match by Ref name**: match `$ref` request example with a corresponding `$ref` response example, for example 
 `create-users-example` would match `create-users-example-200` to define a successful `200` scenario
 * **match by Example name**: find request and response examples that have the same name

@@ -3,7 +3,7 @@
 Lightweight mock server created from an OpenAPI specification. 
 
 Why **native**? Because the request-response interactions are defined within the OpenAPI file, without
-the need for an additional application or storage (and therefore complexity).
+the need for an additional application or storage (and therefore complexity). No external dependencies.
 
 The request-response interactions (aka the contracts) are defined by parsing the OpenAPI examples, see [mapping strategies](#how-it-works).
 A fallback response is generated to ensure every request receives always a response.

@@ -3,7 +3,9 @@ name: Build and push to Docker
 on:
   push:
     branches: [ "main" ]
-
+    paths-ignore:
+      - '**/README.md'
+      - .gitignore
 jobs:
   docker:
     runs-on: ubuntu-latest

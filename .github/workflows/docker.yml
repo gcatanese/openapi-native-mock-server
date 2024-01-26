@@ -26,7 +26,7 @@ jobs:
     - name: Run mock server
       run: docker run --rm -d -p 8080:8080 --name openapi-native-mock-server openapi-native-mock-server
     - name: Ping mock server URLs
-      uses: jtalk/url-health-check-action@v3
+      uses: jtalk/url-health-check-action@v4
       with:
         url: http://localhost:8080/index|http://localhost:8080/openapi
     - name: Set up QEMU

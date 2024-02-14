@@ -23,6 +23,8 @@ public class StringSample implements SampleValue {
         // generate a 'reasonable' value for the given field
         if (key.equalsIgnoreCase("currency")) {
             value = "EUR";
+        } else if (key.equalsIgnoreCase("type")) {
+            value = "type_a";
         } else if (key.equalsIgnoreCase("country")) {
             value = "NL";
         } else if (key.equalsIgnoreCase("countryCode")) {

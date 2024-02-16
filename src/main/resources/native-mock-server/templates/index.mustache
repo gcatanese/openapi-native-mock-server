@@ -62,7 +62,7 @@
           <ul class="nested">
       {{#vendorExtensions.items}}
 
-           <li><span class="caret">#{{-index}}: {{{requestExampleName}}}</span>
+           <li><span class="caret">#{{-index}}: {{{requestExampleName}}}: Status Code {{{statusCode}}}</span>
             <ul class="nested">
             {{^requestBody}}
                 <li><span>WHEN {{parameterName}} = {{parameterValue}}</span>
@@ -90,7 +90,7 @@
 
       {{/vendorExtensions.items}}
 
-           <li><span class="caret">Fallback (any other request)</span>
+           <li><span class="caret">Fallback (any other request): Status Code 200</span>
                     <ul class="nested">
                     <li><div class="jsonpayload"><pre>
 {{{vendorExtensions.fallback.responseBody}}}

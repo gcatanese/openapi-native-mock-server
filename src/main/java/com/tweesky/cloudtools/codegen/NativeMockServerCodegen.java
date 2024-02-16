@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tweesky.cloudtools.codegen.samples.*;
+import com.tweesky.cloudtools.codegen.util.RequestHelper;
 import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.media.*;
 import org.openapitools.codegen.*;
@@ -47,7 +48,10 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
 
     private final Logger LOGGER = LoggerFactory.getLogger(NativeMockServerCodegen.class);
 
+    protected String server = "http://localhost";
     protected int serverPort = 8080;
+    protected String baseMockUrl = server + ":" + serverPort;
+
     protected String projectName = "openapi-native-mock-server";
     protected String apiPath = "api";
 
@@ -160,6 +164,10 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
             items.addAll(getInteractions(codegenOperation));
 
             if (!items.isEmpty()) {
+                for(Interaction item : items) {
+                    item.setCurl(getCurl(item));
+                }
+
                 codegenOperation.vendorExtensions.put("items", items);
             }
 
@@ -168,6 +176,18 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
 
         }
         return objs;
+    }
+
+    String getCurl(Interaction interaction) {
+        String path = interaction.path;
+
+        if(interaction.getParameterName() != null && interaction.getParameterValue() != null) {
+            path = path.replace(":" + interaction.getParameterName(), interaction.parameterValue);
+        }
+
+        String curl = new RequestHelper().getCurl(baseMockUrl + path, interaction.httpVerb, interaction.requestBody);
+
+        return curl;
     }
 
     @Override
@@ -314,6 +334,8 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
                     if (responseItem != null) {
                         // found response example
                         Interaction item = new Interaction();
+                        item.setPath(codegenOperation.path);
+                        item.setHttpVerb(codegenOperation.httpMethod);
                         item.setRequestBody(getJsonFromExample(requestExample));
                         item.setStatusCode(responseItem.getStatusCode());
                         item.setResponseBody(responseItem.getBody());
@@ -369,6 +391,8 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
                         if (responseItem != null) {
                             // found response example
                             Interaction item = new Interaction();
+                            item.setPath(codegenOperation.path);
+                            item.setHttpVerb(codegenOperation.httpMethod);
                             item.setParameterName(codegenParameter.paramName);
                             item.setParameterValue(String.valueOf(requestExample.getValue()));
                             item.setStatusCode(responseItem.getStatusCode());
@@ -727,12 +751,15 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
     public class Interaction {
 
         private String statusCode;
+        private String path;
+        private String httpVerb;
         private String parameterName;
         private String parameterValue;
         private String requestBody;
         private String responseBody;
         private String requestExampleName;
         private String responseExampleName;
+        private String curl;
 
         public String getStatusCode() {
             return statusCode;
@@ -740,6 +767,22 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
 
         public void setStatusCode(String statusCode) {
             this.statusCode = statusCode;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+
+        public String getHttpVerb() {
+            return httpVerb;
+        }
+
+        public void setHttpVerb(String httpVerb) {
+            this.httpVerb = httpVerb;
         }
 
         public String getParameterName() {
@@ -789,6 +832,14 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
 
         public void setResponseExampleName(String responseExampleName) {
             this.responseExampleName = responseExampleName;
+        }
+
+        public String getCurl() {
+            return curl;
+        }
+
+        public void setCurl(String curl) {
+            this.curl = curl;
         }
     }
 

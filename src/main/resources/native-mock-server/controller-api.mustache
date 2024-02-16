@@ -42,9 +42,10 @@ func {{nickname}}(c *gin.Context) {
 	var expected []byte
 	var eq bool
 
-    {{/-first}}
 	// input (payload request body)
 	body, _ = io.ReadAll(c.Request.Body)
+
+    {{/-first}}
 
 	// expected output
 	expected = []byte(`{{{requestBody}}}`)

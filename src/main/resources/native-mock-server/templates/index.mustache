@@ -42,6 +42,15 @@
         display: block;
       }
 
+      .hidden {
+        display: none;
+      }
+
+      .copy:hover {
+        cursor: pointer;
+        position: relative;
+      }
+
       .jsonpayload {
         background-color: #F0F2F5;
         width: 80%;
@@ -63,6 +72,7 @@
       {{#vendorExtensions.items}}
 
            <li><span class="caret">#{{-index}}: {{{requestExampleName}}}: Status Code {{{statusCode}}}</span>
+           <span id="copy" class="copy">Copy<span id="curlText" class="hidden">{{{curl}}}</span></span>
             <ul class="nested">
             {{^requestBody}}
                 <li><span>WHEN {{parameterName}} = {{parameterValue}}</span>
@@ -113,6 +123,31 @@
           this.classList.toggle("caret-down");
         });
     }
+
+    var copySpans = document.querySelectorAll('span#copy');
+
+    copySpans.forEach(function(span) {
+        span.addEventListener('click', function() {
+            var childSpan = span.querySelector('#curlText');
+            if (childSpan) {
+                navigator.clipboard.writeText(childSpan.textContent)
+                    .then(function() {
+                        var copiedMessage = document.createElement('span');
+                        copiedMessage.textContent = '   ✅';
+                        childSpan.parentNode.appendChild(copiedMessage);
+
+                        // Hide after 3 seconds
+                        setTimeout(function() {
+                            copiedMessage.parentNode.removeChild(copiedMessage);
+                        }, 3000);
+                    })
+                    .catch(function(error) {
+                        console.error('Unable to copy text: ', error);
+                    });
+            }
+        });
+    });
+
   </script>
 
  </body>

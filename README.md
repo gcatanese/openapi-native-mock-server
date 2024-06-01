@@ -10,14 +10,14 @@ A fallback response is generated to ensure every request receives always a respo
 
 It is:
 * **lightweight**: it runs in a single (small) container
-* **fast**: it creates behind the scenes a Go service with minimal footprint
-* **simple**: it displays the mock expectations in the index page. View the JSON payload each request will receive.
+* **fast**: it creates behind the scenes a Go service with a minimal footprint
+* **simple**: it displays the mock expectations on the index page. Inspect the JSON payload of all mocked responses.
 
 ## Use cases
 
 It can be used in different scenarios:
-* you are developing an API SDK and need to implement solid integration testing: try it out in combination with [TestContainers](https://github.com/gcatanese/openapi-testcontainers).
-* you are building APIs and want to help your API consumers during the integration: make available a mock server that implements the API contract.
+* you are developing an API SDK and need to implement solid integration testing: try it out with [TestContainers](https://github.com/gcatanese/openapi-testcontainers).
+* you are building APIs and want to help your API consumers during the integration: make a mock server (that implements the API contract) readily available.
 * you are developing an application that uses a third-party API dependency: mock the API to make your development faster and more efficient.
 
 ## Usage
@@ -86,7 +86,7 @@ Check it out.
 
 ## How it works
 
-The module uses the [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator) to genereate a lightweight 
+The module uses the [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator) to generate a lightweight 
 mock server based on the OpenAPI specification. The request and response examples are found and matched to define the 
 interactions (contract) between the consumer and the producer of the API.  
 

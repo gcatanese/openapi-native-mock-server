@@ -101,6 +101,5 @@ ensure every request has at least a response.
 
 ## References
 
-Check out the [Contract Testing with OpenAPI](https://medium.com/geekculture/contract-testing-with-openapi-42267098ddc7) article
-to understand the challenges and solutions of Contract Testing with the OpenAPI standard.
+Check out the [Contract Testing with OpenAPI](https://beppecatanese.hashnode.dev/contract-testing-with-openapi) to understand challenges and opportunities of Contract Testing with the OpenAPI standard.
 

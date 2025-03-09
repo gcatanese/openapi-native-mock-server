@@ -3,4 +3,4 @@
 # It should match the version of openapi-generator in the pom.xml
 #
 
-7.1.0-SNAPSHOT
+7.12.0

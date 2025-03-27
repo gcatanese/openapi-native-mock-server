@@ -1,0 +1,57 @@
+package validator
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/gin-gonic/gin"
+	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/getkin/kin-openapi/openapi3filter"
+	"github.com/getkin/kin-openapi/routers/gorillamux"
+)
+
+// openAPIDoc holds the loaded and validated OpenAPI specification.
+var openAPIDoc *openapi3.T
+var router *gorillamux.Router
+
+// InitOpenAPIValidation loads the OpenAPI spec from the provided file path and validates it.
+// Call this once during application startup.
+func InitOpenAPIValidation(specPath string) error {
+	loader := openapi3.NewLoader()
+	doc, err := loader.LoadFromFile(specPath)
+	if err != nil {
+		return fmt.Errorf("failed to load OpenAPI spec: %w", err)
+	}
+	if err := doc.Validate(context.Background()); err != nil {
+		return fmt.Errorf("failed to validate OpenAPI spec: %w", err)
+	}
+	r, err := gorillamux.NewRouter(doc)
+	if err != nil {
+		return fmt.Errorf("failed to create router: %w", err)
+	}
+
+	router = r.(*gorillamux.Router)
+	openAPIDoc = doc
+
+	return nil
+}
+
+// ValidateRequest validates the given Gin context request against the OpenAPI specification.
+// It returns an error if the request does not conform to the spec.
+func ValidateRequest(c *gin.Context) error {
+	// Find the matching route for the current request.
+	route, pathParams, err := router.FindRoute(c.Request)
+	if err != nil {
+		return fmt.Errorf("route not found in OpenAPI spec: %w", err)
+	}
+
+	// Prepare the validation input using the found route.
+	validationInput := &openapi3filter.RequestValidationInput{
+		Request:    c.Request,
+		PathParams: pathParams,
+		Route:      route,
+	}
+
+	// Validate the request.
+	return openapi3filter.ValidateRequest(context.Background(), validationInput)
+}

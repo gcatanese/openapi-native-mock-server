@@ -4,6 +4,9 @@ public class BooleanSample implements SampleValue {
 
     private Object schema;
 
+    public BooleanSample() {
+    }
+
     public BooleanSample(Object schema) {
         this.schema = schema;
     }

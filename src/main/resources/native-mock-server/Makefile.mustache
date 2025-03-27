@@ -1,0 +1,11 @@
+goimports:=$(shell go env GOPATH)/bin/goimports
+
+# Download tool
+$(goimports):
+	go install golang.org/x/tools/cmd/goimports@v0.24.0
+
+# Format code
+fmt: $(goimports)
+	$(goimports) -w api
+
+	@echo "Code format ✅"

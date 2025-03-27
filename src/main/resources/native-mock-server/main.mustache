@@ -7,13 +7,17 @@ import (
 	"html/template"
 
 	sw "github.com/openapi-native-mock-server/{{apiPath}}"
+    "github.com/openapi-native-mock-server/validator"
 )
 
 //go:embed templates/*
 var f embed.FS
 
 func main() {
-	log.Printf("Server started")
+
+    if err := validator.InitOpenAPIValidation("openapi/openapi.yaml"); err != nil {
+        log.Fatalf("Error initializing OpenAPI validation: %v", err)
+    }
 
 	router := sw.NewRouter()
 

@@ -1,0 +1,23 @@
+goimports:=$(shell go env GOPATH)/bin/goimports
+
+# Download tool
+$(goimports):
+	go install golang.org/x/tools/cmd/goimports@v0.24.0
+
+# Format code
+fmt: $(goimports)
+	$(goimports) -w api
+
+	@echo "Code format ✅"
+
+# Check dependencies
+tidy:
+	go mod tidy
+
+	@echo "Dependencies ✅"
+
+
+# Run app
+run: fmt tidy
+	@echo "Starting the app..."
+	go run -v .

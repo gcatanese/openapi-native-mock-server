@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/openapi-native-mock-server/validator"
+
 ){{#operation}}
 
 // {{nickname}} - {{{summary}}}
@@ -15,6 +17,11 @@ import (
 // Deprecated
 {{/isDeprecated}}
 func {{nickname}}(c *gin.Context) {
+
+    if err := validator.ValidateRequest(c); err != nil {
+        c.JSON(400, gin.H{"error": err.Error()})
+        return
+    }
 
 	// avoid package imported but not used error (ignore code)
 	_, _ = io.ReadAll(strings.NewReader("noop"))

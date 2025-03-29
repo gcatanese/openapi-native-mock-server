@@ -1,13 +1,22 @@
 package com.tweesky.cloudtools.codegen.samples;
 
+import io.swagger.v3.oas.models.media.JsonSchema;
 import io.swagger.v3.oas.models.media.StringSchema;
 
 public class StringSample implements SampleValue {
 
     private StringSchema schema;
+    private JsonSchema jsonSchema;
 
-    public StringSample(Object schema) {
-        this.schema = (StringSchema) schema;
+    public StringSample() {
+    }
+
+    public StringSample(StringSchema schema) {
+        this.schema = schema;
+    }
+
+    public StringSample(JsonSchema schema) {
+        this.jsonSchema = schema;
     }
 
     @Override
@@ -15,11 +24,15 @@ public class StringSample implements SampleValue {
 
         String value = "";
 
-        // check enum
-        if (schema.getEnum() != null && !schema.getEnum().isEmpty()) {
+        // check enum (when underlying object is a Schema)
+        if (schema != null &&schema.getEnum() != null && !schema.getEnum().isEmpty()) {
             return schema.getEnum().get(0);
         }
 
+        // check enum (when underlying object is a JsonSchema)
+        if (jsonSchema != null &&jsonSchema.getEnum() != null && !jsonSchema.getEnum().isEmpty()) {
+            return (String) jsonSchema.getEnum().get(0);
+        }
         // generate a 'reasonable' value for the given field
         if (key.equalsIgnoreCase("currency")) {
             value = "EUR";

@@ -150,9 +150,9 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
     public OperationsMap postProcessOperationsWithModels(OperationsMap objs, List<ModelMap> allModels) {
         objs = super.postProcessOperationsWithModels(objs, allModels);
 
+
         OperationMap operations = objs.getOperations();
         List<CodegenOperation> operationList = operations.getOperation();
-
 
         for (CodegenOperation codegenOperation : operationList) {
             List<Interaction> items = new ArrayList<>();
@@ -175,8 +175,16 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
             codegenOperation.vendorExtensions.put("fallback", getDefault(codegenOperation));
 
         }
+
         return objs;
     }
+
+    @Override
+    public Map<String, Object> postProcessSupportingFileData(Map<String, Object> objs) {
+        generateJSONSpecFile(objs);
+        return super.postProcessSupportingFileData(objs);
+    }
+
 
     String getCurl(Interaction interaction) {
         String path = interaction.path;
@@ -226,8 +234,11 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
         supportingFiles.add(new SupportingFile("README.mustache", apiPath, "README.md")
                 .doNotOverwrite());
         supportingFiles.add(new SupportingFile("go.mod.mustache", "go.mod"));
+        supportingFiles.add(new SupportingFile("validator/openapi_validation.mustache", "", "validator/openapi_validation.go"));
+        supportingFiles.add(new SupportingFile("openapi/openapi.mustache", "openapi", "openapi.json"));
         supportingFiles.add(new SupportingFile("templates/index.mustache", "templates", "index.html"));
         supportingFiles.add(new SupportingFile("templates/openapi.mustache", "templates", "openapi.html"));
+        supportingFiles.add(new SupportingFile("Makefile.mustache", "", "Makefile"));
     }
 
 
@@ -264,8 +275,7 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
     }
 
     /**
-     * Returns human-friendly help for the generator.  Provide the consumer with help
-     * tips, parameters here
+     * Returns human-friendly help for the generator.
      *
      * @return A string value for the help message
      */
@@ -275,7 +285,7 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
     }
 
     /**
-     * Location to write api files.  You can use the apiPackage() as defined when the class is
+     * Location of the API package
      * instantiated
      */
     @Override
@@ -286,6 +296,14 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
     @Override
     public String modelFileFolder() {
         return outputFolder + File.separator + apiPackage().replace('.', File.separatorChar);
+    }
+
+    /**
+     * skip auto-generated examples
+     */
+    @Override
+    public void setSkipOperationExample(boolean skipOperationExample) {
+        super.setSkipOperationExample(true);
     }
 
     List<Interaction> getInteractions(CodegenOperation codegenOperation) {
@@ -690,10 +708,19 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
 
             if (value instanceof StringSchema) {
                 ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
-                        JSON_ESCAPE_DOUBLE_QUOTE + new StringSample(value).getValue(key) + JSON_ESCAPE_DOUBLE_QUOTE;
-            } else if (value instanceof IntegerSchema) {
+                        JSON_ESCAPE_DOUBLE_QUOTE + new StringSample((StringSchema) value).getValue(key) + JSON_ESCAPE_DOUBLE_QUOTE;
+            }
+            else if (value instanceof String) {
+                ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
+                        JSON_ESCAPE_DOUBLE_QUOTE + new StringSample().getValue(key) + JSON_ESCAPE_DOUBLE_QUOTE;
+            }
+            else if (value instanceof IntegerSchema) {
                 ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
                         new IntegerSample(value).getValue(key);
+            }
+            else if (value instanceof Integer) {
+                    ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
+                            new IntegerSample().getValue(key);
             } else if (value instanceof EmailSchema) {
                 ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
                         JSON_ESCAPE_DOUBLE_QUOTE + new EmailSample(value).getValue(key) + JSON_ESCAPE_DOUBLE_QUOTE;
@@ -706,6 +733,9 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
             } else if (value instanceof BooleanSchema) {
                 ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
                         new BooleanSample(value).getValue(key);
+            } else if (value instanceof Boolean) {
+                ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
+                        new BooleanSample().getValue(key);
             } else if (value instanceof ArraySchema) {
                 ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
                         "[]";
@@ -715,6 +745,15 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
             } else if (value instanceof MapSchema) {
                 ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
                         "[]";
+            } else if (value instanceof JsonSchema && ((JsonSchema) value).getType() != null && ((JsonSchema) value).getType().equalsIgnoreCase("string")) {
+                ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
+                        JSON_ESCAPE_DOUBLE_QUOTE + new StringSample().getValue(key) + JSON_ESCAPE_DOUBLE_QUOTE;
+            } else if(value instanceof JsonSchema && ((JsonSchema) value).getType() != null && ((JsonSchema) value).getType().equalsIgnoreCase("integer")) {
+                    ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
+                            JSON_ESCAPE_DOUBLE_QUOTE + new IntegerSample().getValue(key) + JSON_ESCAPE_DOUBLE_QUOTE;
+            } else if(value instanceof JsonSchema && ((JsonSchema) value).getType() != null && ((JsonSchema) value).getType().equalsIgnoreCase("boolean")) {
+                ret = ret + JSON_ESCAPE_DOUBLE_QUOTE + key + JSON_ESCAPE_DOUBLE_QUOTE + ": " +
+                        JSON_ESCAPE_DOUBLE_QUOTE + new BooleanSample().getValue(key) + JSON_ESCAPE_DOUBLE_QUOTE;
             } else if (value instanceof Schema) {
                 String ref = ((Schema)value).get$ref();
                 Schema schema = getSchemaByRef(ref);
@@ -728,7 +767,7 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
                 String in = ret + "\"" + key + JSON_ESCAPE_DOUBLE_QUOTE + ": ";
                 ret = traverseMap(((LinkedHashMap<String, Object>) value), in);
             } else {
-                LOGGER.warn("Value type unrecognised: " + value.getClass());
+                LOGGER.warn("Value type unrecognised or unsupported: " + value.getClass());
             }
 
             if (counter < numVars) {

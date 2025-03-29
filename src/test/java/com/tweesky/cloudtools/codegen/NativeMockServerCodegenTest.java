@@ -32,6 +32,7 @@ public class NativeMockServerCodegenTest {
 
         final CodegenConfigurator configurator = new CodegenConfigurator()
                 .setGeneratorName("native-mock-server")
+                .setSkipOperationExample(true)
                 .setInputSpec("src/test/resources/specs/specByContractId.yaml")
                 .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
 
@@ -83,6 +84,7 @@ public class NativeMockServerCodegenTest {
 
         final CodegenConfigurator configurator = new CodegenConfigurator()
                 .setGeneratorName("native-mock-server")
+                .setSkipOperationExample(true)
                 .setInputSpec("src/test/resources/specs/specByContractId.yaml")
                 .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
 
@@ -106,6 +108,7 @@ public class NativeMockServerCodegenTest {
 
         final CodegenConfigurator configurator = new CodegenConfigurator()
                 .setGeneratorName("native-mock-server")
+                .setSkipOperationExample(true)
                 .setInputSpec("src/test/resources/specs/specByRef.yaml")
                 .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
 
@@ -130,6 +133,7 @@ public class NativeMockServerCodegenTest {
 
         final CodegenConfigurator configurator = new CodegenConfigurator()
                 .setGeneratorName("native-mock-server")
+                .setSkipOperationExample(true)
                 .setInputSpec("src/test/resources/specs/specNoExamples.yaml")
                 .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
 
@@ -156,6 +160,7 @@ public class NativeMockServerCodegenTest {
 
         final CodegenConfigurator configurator = new CodegenConfigurator()
                 .setGeneratorName("native-mock-server")
+                .setSkipOperationExample(true)
                 .setInputSpec("src/test/resources/specs/specWithEnum.yaml")
                 .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
 
@@ -182,6 +187,7 @@ public class NativeMockServerCodegenTest {
 
         final CodegenConfigurator configurator = new CodegenConfigurator()
                 .setGeneratorName("native-mock-server")
+                .setSkipOperationExample(true)
                 .setInputSpec("src/test/resources/specs/specs-no-examples.yaml")
                 .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
 
@@ -208,6 +214,7 @@ public class NativeMockServerCodegenTest {
 
         final CodegenConfigurator configurator = new CodegenConfigurator()
                 .setGeneratorName("native-mock-server")
+                .setSkipOperationExample(true)
                 .setInputSpec("src/test/resources/specs/specByName.yaml")
                 .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
 
@@ -235,6 +242,7 @@ public class NativeMockServerCodegenTest {
 
         final CodegenConfigurator configurator = new CodegenConfigurator()
                 .setGeneratorName("native-mock-server")
+                .setSkipOperationExample(true)
                 .setInputSpec("src/test/resources/specs/get-example.yaml")
                 .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
 

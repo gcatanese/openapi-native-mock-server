@@ -4,6 +4,10 @@ public class IntegerSample implements SampleValue {
 
     private Object schema;
 
+    public IntegerSample() {
+        this.schema = schema;
+    }
+
     public IntegerSample(Object schema) {
         this.schema = schema;
     }

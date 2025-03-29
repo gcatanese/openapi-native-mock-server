@@ -21,20 +21,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Iterables;
 import com.tweesky.cloudtools.codegen.samples.*;
 import com.tweesky.cloudtools.codegen.util.RequestHelper;
 import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.media.*;
-import lombok.Setter;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.AbstractGoCodegen;
-import org.openapitools.codegen.languages.GoClientCodegen;
 import org.openapitools.codegen.meta.GeneratorMetadata;
 import org.openapitools.codegen.meta.Stability;
 import org.openapitools.codegen.meta.features.*;
 import org.openapitools.codegen.model.ModelMap;
-import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 import org.slf4j.Logger;
@@ -68,10 +64,6 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
 
     public static final String JSON_ESCAPE_DOUBLE_QUOTE = "\"";
     public static final String JSON_ESCAPE_NEW_LINE = "";
-
-    public static final String IMPORT_VALIDATOR = "importValidator";
-    @Setter
-    protected boolean useOneOfDiscriminatorLookup = false; // use oneOf discriminator's mapping for model lookup
 
     public NativeMockServerCodegen() {
         super();
@@ -158,6 +150,7 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
     public OperationsMap postProcessOperationsWithModels(OperationsMap objs, List<ModelMap> allModels) {
         objs = super.postProcessOperationsWithModels(objs, allModels);
 
+
         OperationMap operations = objs.getOperations();
         List<CodegenOperation> operationList = operations.getOperation();
 
@@ -185,6 +178,13 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
 
         return objs;
     }
+
+    @Override
+    public Map<String, Object> postProcessSupportingFileData(Map<String, Object> objs) {
+        generateJSONSpecFile(objs);
+        return super.postProcessSupportingFileData(objs);
+    }
+
 
     String getCurl(Interaction interaction) {
         String path = interaction.path;
@@ -235,7 +235,7 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
                 .doNotOverwrite());
         supportingFiles.add(new SupportingFile("go.mod.mustache", "go.mod"));
         supportingFiles.add(new SupportingFile("validator/openapi_validation.mustache", "", "validator/openapi_validation.go"));
-        supportingFiles.add(new SupportingFile("openapi/openapi.mustache", "openapi", "openapi.yaml"));
+        supportingFiles.add(new SupportingFile("openapi/openapi.mustache", "openapi", "openapi.json"));
         supportingFiles.add(new SupportingFile("templates/index.mustache", "templates", "index.html"));
         supportingFiles.add(new SupportingFile("templates/openapi.mustache", "templates", "openapi.html"));
         supportingFiles.add(new SupportingFile("Makefile.mustache", "", "Makefile"));
@@ -275,8 +275,7 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
     }
 
     /**
-     * Returns human-friendly help for the generator.  Provide the consumer with help
-     * tips, parameters here
+     * Returns human-friendly help for the generator.
      *
      * @return A string value for the help message
      */
@@ -286,7 +285,7 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
     }
 
     /**
-     * Location to write api files.  You can use the apiPackage() as defined when the class is
+     * Location of the API package
      * instantiated
      */
     @Override
@@ -297,6 +296,14 @@ public class NativeMockServerCodegen extends AbstractGoCodegen {
     @Override
     public String modelFileFolder() {
         return outputFolder + File.separator + apiPackage().replace('.', File.separatorChar);
+    }
+
+    /**
+     * skip auto-generated examples
+     */
+    @Override
+    public void setSkipOperationExample(boolean skipOperationExample) {
+        super.setSkipOperationExample(true);
     }
 
     List<Interaction> getInteractions(CodegenOperation codegenOperation) {

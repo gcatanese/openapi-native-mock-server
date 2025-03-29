@@ -9,3 +9,15 @@ fmt: $(goimports)
 	$(goimports) -w api
 
 	@echo "Code format ✅"
+
+# Check dependencies
+tidy:
+	go mod tidy
+
+	@echo "Dependencies ✅"
+
+
+# Run app
+run: fmt tidy
+	@echo "Starting the app..."
+	go run -v .

@@ -13,7 +13,11 @@ FROM golang:1.22-alpine3.19
 COPY --from=0 /openapi/go-server ./go-server
 
 WORKDIR /go/go-server
-RUN go mod tidy
+
+CMD echo "Runtime path: $(pwd)"
 
 EXPOSE 8080
-CMD ["go", "run", "/go/go-server/main.go"]
+#RUN go mod tidy
+#CMD ["go", "run", "/go/go-server/main.go"]
+
+RUN make run

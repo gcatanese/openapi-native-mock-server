@@ -9,7 +9,7 @@ RUN java -cp /openapi/bin/openapi-native-mock-server.jar:/openapi/bin/openapi-ge
    -i /openapi/$openapifile -o /openapi/go-server
 
 # stage 1: build Go executable
-FROM golang:1.19-alpine3.15
+FROM golang:1.22-alpine3.19
 COPY --from=0 /openapi/go-server ./go-server
 
 WORKDIR /go/go-server

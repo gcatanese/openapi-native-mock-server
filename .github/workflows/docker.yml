@@ -25,6 +25,8 @@ jobs:
       run: docker build --build-arg openapifile=openapi/sample.yaml -t openapi-native-mock-server .
     - name: Run mock server
       run: docker run --rm -d -p 8080:8080 --name openapi-native-mock-server openapi-native-mock-server
+    - name: Docker logs
+      run: docker logs openapi-native-mock-server
     - name: Ping mock server URLs
       uses: jtalk/url-health-check-action@v4
       with:

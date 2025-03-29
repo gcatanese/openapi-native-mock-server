@@ -15,7 +15,7 @@ var f embed.FS
 
 func main() {
 
-    if err := validator.InitOpenAPIValidation("openapi/openapi.yaml"); err != nil {
+    if err := validator.InitOpenAPIValidation("openapi/openapi.json"); err != nil {
         log.Fatalf("Error initializing OpenAPI validation: %v", err)
     }
 

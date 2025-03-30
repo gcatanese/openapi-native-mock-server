@@ -12,9 +12,6 @@ RUN java -cp /openapi/bin/openapi-native-mock-server.jar:/openapi/bin/openapi-ge
 FROM golang:1.22-alpine3.19
 COPY --from=0 /openapi/go-server ./go-server
 
-WORKDIR /go/go-server
-RUN go mod tidy
-
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /build .
 
 # stage 2: build minimal image
